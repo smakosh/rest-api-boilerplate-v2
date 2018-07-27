@@ -4,8 +4,8 @@
   "description": "rest api boilerplate",
   "main": "index.js",
   "scripts": {
-    "start": "node server/server.js",
-    "develop": "nodemon server/server.js"
+    "start": "node index.js",
+    "develop": "nodemon index.js"
   },
   "author": "smakosh",
   "license": "ISC",
