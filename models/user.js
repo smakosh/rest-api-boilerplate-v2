@@ -6,12 +6,28 @@ const bcrypt = require('bcryptjs')
 const { secret_key } = require('../config/config')
 
 const UserSchema = new mongoose.Schema({
+	firstName: {
+		type: String,
+		required: true,
+		minlength: 2,
+		maxlength: 20
+	},
+	lastName: {
+		type: String,
+		required: true,
+		minlength: 2,
+		maxlength: 20
+	},
 	username: {
 		type: String,
 		required: true,
 		minlength: 1,
 		maxlength: 12,
 		trim: true
+	},
+	type: {
+		type: String,
+		required: true
 	},
 	email: {
 		type: String,
