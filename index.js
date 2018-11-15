@@ -1,20 +1,31 @@
 const express = require('express')
+const Cors = require('cors')
 const bodyParser = require('body-parser')
 const mongoose = require('mongoose')
 const user = require('./routes/user')
 // const profile = require('./routes/profile')
 const post = require('./routes/post')
-const { MONGO_URI } = require('./config/config.js')
+const { DB, allowed_url } = require('./config/config.js')
 
 const app = express()
+
+app.use(Cors({
+	origin: allowed_url
+}))
 
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
-mongoose
-	.connect(MONGO_URI, { useNewUrlParser: true })
-	.then(() => console.log('mongoDB connected'))
-	.catch(err => console.log(err))
+const connectDb = async () => {
+	try {
+		await mongoose.connect(DB, { useNewUrlParser: true })
+		console.log('mongoDB connected')
+	} catch (err) {
+		console.log(err)
+	}
+}
+
+connectDb()
 
 app.use('/api/user', user)
 app.use('/api/post', post)

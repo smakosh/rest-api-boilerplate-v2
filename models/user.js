@@ -1,4 +1,5 @@
 const mongoose = require('mongoose')
+const uniqueValidator = require('mongoose-unique-validator')
 const validator = require('validator')
 const jwt = require('jsonwebtoken')
 const _ = require('lodash')
@@ -23,19 +24,20 @@ const UserSchema = new mongoose.Schema({
 		required: true,
 		minlength: 1,
 		maxlength: 12,
-		trim: true
+		trim: true,
+		unique: true
 	},
 	type: {
 		type: String,
+		default: 'admin',
 		required: true
 	},
 	email: {
 		type: String,
 		required: true,
-		minlength: 1,
 		unique: true,
 		trim: true,
-		vlidate: {
+		validate: {
 			validator: validator.isEmail,
 			message: '{VALUE} is not a valid email'
 		}
@@ -64,17 +66,15 @@ UserSchema.methods.toJSON = function () {
 	return _.pick(userObject, ['_id', 'username', 'email'])
 }
 
-UserSchema.methods.generateAuthToken = function () {
+UserSchema.methods.generateAuthToken = async function () {
 	const user = this
 
 	const access = 'auth'
 	const token = jwt.sign({ _id: user._id.toHexString(), access }, secret_key).toString()
 
 	user.tokens.push({ access, token })
-
-	return user.save().then(() => {
-		return token
-	})
+	await user.save()
+	return token
 }
 
 UserSchema.statics.findByToken = function (token) {
@@ -138,6 +138,8 @@ UserSchema.pre('save', function (next) {
 		next()
 	}
 })
+
+UserSchema.plugin(uniqueValidator, { message: 'Error, expected {PATH} to be unique.' })
 
 const User = mongoose.model('User', UserSchema)
 
