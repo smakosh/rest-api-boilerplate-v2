@@ -11,7 +11,7 @@ router.post('/register', async (req, res) => {
 		const user = await new User(body)
 		await user.save()
 		const token = await user.generateAuthToken()
-		res.json({ username: user.username, token })
+		res.json({ user, token })
 	} catch (err) {
 		res.status(400).json({ error: 'Something went wrong' })
 	}
@@ -19,7 +19,7 @@ router.post('/register', async (req, res) => {
 
 router.get('/verify', authenticate, async (_req, res) => {
 	try {
-		res.json(res.user.username)
+		res.json(res.user)
 	} catch (err) {
 		res.status(404).json({ error: 'could not log you in' })
 	}
@@ -30,7 +30,7 @@ router.post('/login', async (req, res) => {
 		const body = _.pick(req.body, ['email', 'password'])
 		const user = await User.findByCredentials(body.email, body.password)
 		const token = await user.generateAuthToken()
-		res.json({ username: user.username, token })
+		res.json({ user, token })
 	} catch (err) {
 		res.status(400).json({ error: 'Wrong credentials' })
 	}

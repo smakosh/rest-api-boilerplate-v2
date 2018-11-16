@@ -63,7 +63,7 @@ UserSchema.methods.toJSON = function () {
 	const user = this
 	const userObject = user.toObject()
 
-	return _.pick(userObject, ['_id', 'username', 'email'])
+	return _.pick(userObject, ['_id', 'firstName', 'lastName', 'username', 'email'])
 }
 
 UserSchema.methods.generateAuthToken = async function () {
