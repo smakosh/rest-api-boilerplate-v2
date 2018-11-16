@@ -8,7 +8,7 @@ const router = express.Router()
 router.post('/register', async (req, res) => {
 	try {
 		const body = _.pick(req.body, ['username', 'email', 'password', 'firstName', 'lastName'])
-		const user = await new User(body)
+		const user = new User(body)
 		await user.save()
 		const token = await user.generateAuthToken()
 		res.json({ user, token })
